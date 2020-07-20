@@ -8,16 +8,24 @@ const morgan = require("morgan");
 
 const app = express();
 
+const { authUser } = require("./middleware/auth");
+
 const companyRoutes = require("./routes/companies");
+const jobsRoutes = require("./routes/jobs");
 const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
 
 app.use(express.json());
 
 // add logging system
 app.use(morgan("tiny"));
 
+app.use(authUser);
+
 app.use("/companies", companyRoutes);
+app.use("/jobs", jobsRoutes);
 app.use("/users", userRoutes);
+app.use(authRoutes);
 
 /** 404 handler */
 

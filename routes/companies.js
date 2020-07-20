@@ -5,6 +5,7 @@ const updateCompanySchema = require("../schemas/updateCompanySchema.json");
 const router = new express.Router();
 const Company = require("../models/company");
 const ExpressError = require("../helpers/expressError");
+const { requireLogin, requireAdmin } = require("../middleware/auth");
 
 /** GET /
  *
@@ -14,7 +15,7 @@ const ExpressError = require("../helpers/expressError");
  *    {companies: [{handle, name}, ...]}
  *
  */
-router.get("/", async (req, res, next) => {
+router.get("/", requireLogin, async (req, res, next) => {
   try {
     const { search, min_employees, max_employees } = req.query;
     const companies = await Company.getAll({
@@ -28,7 +29,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, newCompanySchema);
   if (!schemaCheck.valid) {
     listOfErrors = schemaCheck.errors.map((error) => error.stack);
@@ -42,10 +43,9 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/:handle", async (req, res, next) => {
+router.get("/:handle", requireLogin, async (req, res, next) => {
   try {
     const { handle } = req.params;
-    console.log(`the handle is ${handle}`);
     const company = await Company.getOne(handle);
     return res.json({ company });
   } catch (err) {
@@ -53,7 +53,7 @@ router.get("/:handle", async (req, res, next) => {
   }
 });
 
-router.patch("/:handle", async (req, res, next) => {
+router.patch("/:handle", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, updateCompanySchema);
   if (!schemaCheck.valid) {
     listOfErrors = schemaCheck.errors.map((error) => error.stack);
@@ -67,7 +67,7 @@ router.patch("/:handle", async (req, res, next) => {
   }
 });
 
-router.delete("/:handle", async (req, res, next) => {
+router.delete("/:handle", requireAdmin, async (req, res, next) => {
   try {
     await Company.delete(req.params.handle);
     return res.json({ message: "Company deleted" });

@@ -5,6 +5,7 @@ const updateUserSchema = require("../schemas/updateUserSchema.json");
 const router = new express.Router();
 const User = require("../models/user");
 const ExpressError = require("../helpers/expressError");
+const { requireCorrectUser } = require("../middleware/auth");
 
 /** GET /
  *
@@ -35,8 +36,8 @@ router.post("/", async (req, res, next) => {
     return next(new ExpressError(listOfErrors, 400));
   }
   try {
-    const user = await User.create(req.body);
-    return res.status(201).json({ user });
+    const token = await User.create(req.body);
+    return res.status(201).json({ token });
   } catch (err) {
     return next(err);
   }
@@ -52,7 +53,7 @@ router.get("/:username", async (req, res, next) => {
   }
 });
 
-router.patch("/:username", async (req, res, next) => {
+router.patch("/:username", requireCorrectUser, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, updateUserSchema);
   if (!schemaCheck.valid) {
     listOfErrors = schemaCheck.errors.map((error) => error.stack);
@@ -66,7 +67,7 @@ router.patch("/:username", async (req, res, next) => {
   }
 });
 
-router.delete("/:username", async (req, res, next) => {
+router.delete("/:username", requireCorrectUser, async (req, res, next) => {
   try {
     await User.delete(req.params.username);
     return res.json({ message: "User deleted" });

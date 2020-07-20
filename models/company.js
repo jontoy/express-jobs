@@ -1,6 +1,7 @@
 const db = require("../db");
 const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
+const Job = require("./job");
 
 class Company {
   static async getAll({ search, min_employees, max_employees }) {
@@ -62,6 +63,7 @@ class Company {
     if (!company) {
       throw new ExpressError(`No company found with handle ${handle}`, 404);
     }
+    company.jobs = await Job.getAllByCompanyHandle(company.handle);
     return company;
   }
   static async update(handle, data) {

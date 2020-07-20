@@ -59,6 +59,7 @@ CREATE TABLE public.jobs (
     salary double precision,
     equity double precision,
     company_handle text NOT NULL,
+    date_posted timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT jobs_equity_check CHECK ((equity <= (1.0)::double precision))
 );
 
@@ -124,56 +125,6 @@ COPY public.applications (username, job_id, state, created_at) FROM stdin;
 --
 
 COPY public.companies (handle, name, num_employees, description, logo_url) FROM stdin;
-edwards-lee-and-reese	Edwards, Lee and Reese	744	To much recent it reality coach decision Mr. Dog language evidence minute either deep situation pattern. Other cold bad loss surface real show.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-sellers-bryant	Sellers-Bryant	369	Language discussion mission soon wait according executive. Financial say husband anyone money politics. Dinner action purpose mouth environment I white.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-bauer-gallagher	Bauer-Gallagher	862	Difficult ready trip question produce produce someone.	
-arnold-berger-and-townsend	Arnold, Berger and Townsend	795	Kind crime at perhaps beat. Enjoy deal purpose serve begin or thought. Congress everything miss tend.	
-miller-woods-and-hernandez	Miller, Woods and Hernandez	444	Including theory protect reveal energy himself probably. Test leave mother area however.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-davis-davis	Davis-Davis	23	Career participant difficult. Decide claim particular century society. Question growth two staff.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-jackson-and-sons	Jackson and Sons	649	President couple political sit create.	
-smith-llc	Smith LLC	908	Statement use per mission method. Order truth method.	
-humphrey-llc	Humphrey LLC	678	Agent actually able paper nor. Tell then court full agree without assume.	
-salas-group	Salas Group	624	Central whom mouth partner bring newspaper special city. Show second cost newspaper can early play.	
-morgan-sullivan	Morgan-Sullivan	409	Own once artist part put authority wait. Focus free even. Why friend civil visit.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-perez-miller	Perez-Miller	298	Space one approach wife son. Themselves give necessary follow employee return feel. Step animal doctor sign water early.	
-carr-wells-and-jones	Carr, Wells and Jones	27	Human medical throw book pick possible. Maybe yeah word beat treatment impact campaign.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-thomas-and-sons	Thomas and Sons	51	Book detail scene continue. Art strategy because list two.	
-mitchell-brown	Mitchell-Brown	288	Republican truth church generation voice price issue.	
-watson-davis	Watson-Davis	819	Year join loss.	
-logan-miller	Logan-Miller	429	Pattern hand where never. Social across ability which structure.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-taylor-yu-and-lee	Taylor, Yu and Lee	226	Down bag serve. Officer season company.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-hudson-inc	Hudson Inc	627	End now meet staff. Long government force why bar. Provide bring hope staff almost many be a.	
-mejia-scott-and-ryan	Mejia, Scott and Ryan	628	General traditional late situation discussion dog. Before best up strategy about direction.	
-scott-smith	Scott-Smith	993	Room newspaper foot. Student daughter their themselves top almost near. Wait time recently it street follow medical nothing.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-norman-harvey	Norman-Harvey	837	Drop along test material education. Opportunity forget campaign federal certainly total hair.	
-hall-mills	Hall-Mills	266	Change stage tell note hundred. Worry where program wait.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-gillespie-smith	Gillespie-Smith	302	Candidate ability democratic make drug. Player themselves like front. Over through style loss win very when.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-boyd-evans	Boyd-Evans	698	Build respond generation tree. No five keep. Happy medical back fine focus suffer modern.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-martinez-daniels	Martinez-Daniels	12	Five source market nation. Drop foreign raise pass.	
-willis-henson-and-miller	Willis, Henson and Miller	821	About dream practice. Father significant senior health within four.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-wiggins-frederick-and-boyer	Wiggins, Frederick and Boyer	298	Institution structure say argue bit. Each option high executive easy pattern. Majority white hour there reach drive produce.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-stone-stewart	Stone-Stewart	459	Require successful family but. Traditional article late eight lose common send budget. Better opportunity law country various represent strong probably.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-mueller-moore	Mueller-Moore	932	Edge may report though least pressure likely. Cost short appear program hair seven.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-rivas-llc	Rivas LLC	552	Would road lot research wide mouth. Resource along office drug.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-garner-michael	Garner-Michael	940	Necessary thousand parent since discuss director. Visit machine skill five the.	
-owen-newton	Owen-Newton	953	Red compare try way. Bed standard again number wrong force. Stop exactly agent product economy someone. North describe site manager employee customer.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-jackson-davila-and-conley	Jackson, Davila and Conley	813	Consider with build either.	
-robbins-marsh-and-martin	Robbins, Marsh and Martin	709	Now never worry usually another ability concern hair. Fly lot six protect participant. Teach through head.	
-garcia-ray	Garcia-Ray	217	Laugh low follow fear. Politics main size fine.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-baker-santos	Baker-Santos	225	Compare certain use. Writer time lay word garden. Resource task interesting voice.	
-ingram-ferguson-and-rubio	Ingram, Ferguson and Rubio	753	Human summer field mean impact could exactly. Business read north project will. Left dream use Democrat.	
-burton-ltd	Burton Ltd	610	Cover couple speech bar cell measure movement finally. Nation pull inside.	
-anderson-arias-and-morrow	Anderson, Arias and Morrow	245	Somebody program how I. Face give away discussion view act inside. Your official relationship administration here.	
-foster-rice	Foster-Rice	901	Either relate himself. Source TV data one general. Actually than seat eight.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-weber-hernandez	Weber-Hernandez	681	Contain product south picture scientist.	
-moore-plc	Moore PLC	100	Magazine thing eight shake window might they organization. Environmental it bag green.	
-ayala-buchanan	Ayala-Buchanan	309	Make radio physical southern. His white on attention kitchen market upon. Represent west open seven. Particularly subject billion much score thank bag somebody.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-russo-gillespie-and-conrad	Russo, Gillespie and Conrad	398	South sound knowledge guy. Up I size anyone issue drop. Agent light significant mouth while.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-reynolds-greene	Reynolds-Greene	343	Effect win area officer office economy. Congress travel would resource difficult. Nice president mind dinner.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-hall-davis	Hall-Davis	749	Adult go economic off into. Suddenly happy according only common. Father plant wrong free traditional.	
-pugh-ltd	Pugh Ltd	87	Believe reflect perform TV son.	https://www.graphicsprings.com/filestorage/images/1301/Screen%20Shot%202018-10-07%20at%2010.17.59%20AM.png?width=1040&quality=80&crop=0&method=ratio
-graham-herring-and-lane	Graham, Herring and Lane	188	Enough attack return. Fall gas someone her another point those. Star public painting show concern.	
-erickson-inc	Erickson Inc	267	Interesting environment owner beautiful school politics. General friend hair player dinner last administration teacher.	
 \.
 
 
@@ -181,207 +132,7 @@ erickson-inc	Erickson Inc	267	Interesting environment owner beautiful school pol
 -- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: jonathantoy
 --
 
-COPY public.jobs (id, title, salary, equity, company_handle) FROM stdin;
-1	Editor, magazine features	118000	0.15	foster-rice
-2	Tree surgeon	130000	0.08	hall-davis
-3	Multimedia programmer	154000	0.04	owen-newton
-4	Freight forwarder	183000	0.09	hudson-inc
-5	Applications developer	84000	0.04	sellers-bryant
-6	Sports development officer	102000	0.17	scott-smith
-7	Clothing/textile technologist	171000	0.18	smith-llc
-8	Secretary/administrator	172000	0.15	jackson-and-sons
-9	Psychologist, occupational	190000	0.14	robbins-marsh-and-martin
-10	Leisure centre manager	135000	0.02	edwards-lee-and-reese
-11	Best boy	193000	0.06	jackson-and-sons
-12	Field seismologist	62000	0.08	martinez-daniels
-13	Art gallery manager	114000	0.19	anderson-arias-and-morrow
-14	Management consultant	183000	0.13	edwards-lee-and-reese
-15	Ergonomist	160000	0.18	bauer-gallagher
-16	Engineer, materials	185000	0.11	garner-michael
-17	Race relations officer	97000	0.11	bauer-gallagher
-18	Engineering geologist	89000	0.19	ayala-buchanan
-19	Aeronautical engineer	135000	0.06	norman-harvey
-20	Development worker, community	192000	0.08	weber-hernandez
-21	Psychologist, forensic	176000	0.08	boyd-evans
-22	Architectural technologist	57000	0.08	owen-newton
-23	Speech and language therapist	154000	0.01	humphrey-llc
-24	Patent attorney	143000	0.17	foster-rice
-25	Designer, jewellery	92000	0.02	weber-hernandez
-26	Health promotion specialist	72000	0.2	burton-ltd
-27	Television production assistant	99000	0.14	edwards-lee-and-reese
-28	Engineer, chemical	81000	0.09	russo-gillespie-and-conrad
-29	Careers adviser	57000	0.14	carr-wells-and-jones
-30	Surveyor, minerals	98000	0.11	carr-wells-and-jones
-31	Forest/woodland manager	156000	0	carr-wells-and-jones
-32	Haematologist	63000	0.07	ayala-buchanan
-33	Speech and language therapist	159000	0.08	gillespie-smith
-34	Orthoptist	200000	0.16	perez-miller
-35	Camera operator	130000	0.07	arnold-berger-and-townsend
-36	Advertising account executive	130000	0	thomas-and-sons
-37	Field trials officer	137000	0	davis-davis
-38	Ship broker	124000	0.04	davis-davis
-39	Bonds trader	134000	0.16	mitchell-brown
-40	Transport planner	90000	0.12	reynolds-greene
-41	Historic buildings inspector/conservation officer	135000	0.15	rivas-llc
-42	Investment banker, corporate	131000	0.03	ingram-ferguson-and-rubio
-43	Conservation officer, historic buildings	168000	0.02	robbins-marsh-and-martin
-44	Intelligence analyst	148000	0.06	sellers-bryant
-45	Naval architect	126000	0.18	scott-smith
-46	Podiatrist	68000	0.06	reynolds-greene
-47	Physicist, medical	190000	0.2	humphrey-llc
-48	Fisheries officer	67000	0.02	hall-davis
-49	Conservator, furniture	110000	0.12	watson-davis
-50	Air cabin crew	105000	0.06	ingram-ferguson-and-rubio
-51	Financial trader	153000	0.06	garner-michael
-52	Nurse, children's	162000	0.15	humphrey-llc
-53	Information officer	200000	0.13	hall-mills
-54	Paramedic	122000	0.12	baker-santos
-55	Consulting civil engineer	60000	0.06	sellers-bryant
-56	Historic buildings inspector/conservation officer	129000	0.19	watson-davis
-57	Early years teacher	55000	0.07	perez-miller
-58	Transport planner	123000	0.06	hudson-inc
-59	Intelligence analyst	77000	0.09	garner-michael
-60	Counsellor	154000	0.09	owen-newton
-61	Surveyor, building	144000	0.07	russo-gillespie-and-conrad
-62	Technical brewer	157000	0.15	anderson-arias-and-morrow
-63	Control and instrumentation engineer	171000	0.14	salas-group
-64	Photographer	198000	0.13	davis-davis
-65	Multimedia programmer	192000	0.2	graham-herring-and-lane
-66	Public librarian	115000	0.08	norman-harvey
-67	Press sub	100000	0.17	erickson-inc
-68	Writer	172000	0.04	anderson-arias-and-morrow
-69	Designer, fashion/clothing	81000	0	garcia-ray
-70	Information systems manager	123000	0.02	arnold-berger-and-townsend
-71	English as a foreign language teacher	111000	0.19	russo-gillespie-and-conrad
-72	Passenger transport manager	70000	0	rivas-llc
-73	Art gallery manager	73000	0.06	perez-miller
-74	Operational researcher	167000	0.04	ayala-buchanan
-75	Psychologist, clinical	172000	0.1	hudson-inc
-76	Solicitor	131000	0.08	wiggins-frederick-and-boyer
-77	Dealer	175000	0.08	hall-mills
-78	Financial planner	115000	0.04	taylor-yu-and-lee
-79	Scientist, forensic	50000	0.16	foster-rice
-80	Therapist, music	103000	0.15	reynolds-greene
-81	Occupational therapist	183000	0.08	garcia-ray
-82	Dietitian	198000	0.01	ayala-buchanan
-83	Teacher, music	127000	0.01	ingram-ferguson-and-rubio
-84	Ophthalmologist	135000	0	hall-mills
-85	Clinical cytogeneticist	152000	0.06	mitchell-brown
-86	Engineer, civil (contracting)	162000	0.19	moore-plc
-87	Nature conservation officer	82000	0.1	watson-davis
-88	Electrical engineer	157000	0.09	jackson-davila-and-conley
-89	Agricultural consultant	67000	0.08	moore-plc
-90	Embryologist, clinical	138000	0.03	anderson-arias-and-morrow
-91	Chief of Staff	110000	0.11	scott-smith
-92	Marine scientist	54000	0.16	scott-smith
-93	Tourist information centre manager	88000	0.05	foster-rice
-94	Interior and spatial designer	177000	0.1	gillespie-smith
-95	Surveyor, rural practice	193000	0.09	weber-hernandez
-96	Interpreter	55000	0.06	hudson-inc
-97	Financial controller	58000	0.19	sellers-bryant
-98	Geochemist	104000	0.03	hudson-inc
-99	Glass blower/designer	126000	0.13	anderson-arias-and-morrow
-100	Geochemist	130000	0.09	smith-llc
-101	Scientist, research (physical sciences)	117000	0.11	ayala-buchanan
-102	Water engineer	67000	0.01	mejia-scott-and-ryan
-103	Geologist, engineering	116000	0.17	jackson-davila-and-conley
-104	Clinical biochemist	92000	0.03	norman-harvey
-105	Colour technologist	81000	0	burton-ltd
-106	Historic buildings inspector/conservation officer	65000	0.07	mejia-scott-and-ryan
-107	Technical brewer	77000	0.12	thomas-and-sons
-108	Buyer, industrial	147000	0.02	reynolds-greene
-109	Engineer, energy	186000	0.18	arnold-berger-and-townsend
-110	Plant breeder/geneticist	155000	0.16	thomas-and-sons
-111	Pharmacist, hospital	194000	0.17	boyd-evans
-112	Surveyor, insurance	130000	0.13	martinez-daniels
-113	Medical sales representative	125000	0.15	jackson-davila-and-conley
-114	Energy engineer	62000	0.04	norman-harvey
-115	Occupational hygienist	79000	0.1	reynolds-greene
-116	Research officer, government	167000	0.16	mejia-scott-and-ryan
-117	Contractor	89000	0.14	mueller-moore
-118	Hydrologist	50000	0.06	wiggins-frederick-and-boyer
-119	Aeronautical engineer	156000	0	perez-miller
-120	Freight forwarder	183000	0.03	burton-ltd
-121	Research officer, political party	134000	0.02	garner-michael
-122	Engineer, materials	140000	0.17	mitchell-brown
-123	Oceanographer	110000	0.01	anderson-arias-and-morrow
-124	Product designer	184000	0.19	gillespie-smith
-125	Editor, film/video	199000	0.02	bauer-gallagher
-126	Advertising account executive	146000	0.01	thomas-and-sons
-127	Barrister	130000	0.12	stone-stewart
-128	Fashion designer	131000	0	taylor-yu-and-lee
-129	Legal secretary	155000	0.05	pugh-ltd
-130	Financial risk analyst	72000	0.01	scott-smith
-131	Regulatory affairs officer	96000	0.04	logan-miller
-132	Ranger/warden	86000	0.06	ayala-buchanan
-133	Loss adjuster, chartered	76000	0.12	bauer-gallagher
-134	Probation officer	128000	0.15	foster-rice
-135	Therapist, occupational	82000	0.16	mejia-scott-and-ryan
-136	Farm manager	138000	0.15	stone-stewart
-137	Teacher, secondary school	127000	0.07	sellers-bryant
-138	Primary school teacher	142000	0.19	moore-plc
-139	Quality manager	138000	0.04	russo-gillespie-and-conrad
-140	Radio producer	99000	0	mitchell-brown
-141	Music therapist	100000	0.14	taylor-yu-and-lee
-142	Farm manager	68000	0.02	morgan-sullivan
-143	Scientist, product/process development	106000	0.06	scott-smith
-144	Camera operator	51000	0.11	jackson-davila-and-conley
-145	Surveyor, building control	69000	0.11	reynolds-greene
-146	Engineer, technical sales	167000	0.11	ingram-ferguson-and-rubio
-147	Database administrator	79000	0.07	willis-henson-and-miller
-148	Ranger/warden	145000	0.1	jackson-davila-and-conley
-149	IT consultant	59000	0.06	gillespie-smith
-150	Lawyer	162000	0.2	hall-mills
-151	Insurance underwriter	120000	0.13	hall-davis
-152	Museum/gallery conservator	82000	0.13	mejia-scott-and-ryan
-153	Estate manager/land agent	94000	0.1	jackson-davila-and-conley
-154	Trade mark attorney	171000	0.18	mueller-moore
-155	Orthoptist	129000	0.18	willis-henson-and-miller
-156	Recycling officer	57000	0.16	carr-wells-and-jones
-157	Scientist, research (life sciences)	157000	0.04	ayala-buchanan
-158	Astronomer	143000	0	watson-davis
-159	Engineering geologist	170000	0.06	garcia-ray
-160	Armed forces technical officer	136000	0.2	scott-smith
-161	Public relations officer	112000	0.08	weber-hernandez
-162	Set designer	132000	0.12	russo-gillespie-and-conrad
-163	Accountant, chartered certified	86000	0.15	boyd-evans
-164	Special effects artist	101000	0.15	willis-henson-and-miller
-165	Television production assistant	125000	0	logan-miller
-166	Accountant, chartered certified	175000	0.14	stone-stewart
-167	Glass blower/designer	60000	0.05	mueller-moore
-168	Chief Executive Officer	83000	0.03	miller-woods-and-hernandez
-169	Print production planner	197000	0.13	humphrey-llc
-170	Psychologist, counselling	180000	0.17	perez-miller
-171	Meteorologist	81000	0.2	sellers-bryant
-172	Surveyor, insurance	59000	0.1	foster-rice
-173	Therapist, drama	200000	0.01	hall-mills
-174	Merchant navy officer	106000	0.13	mitchell-brown
-175	Engineer, technical sales	157000	0.14	baker-santos
-176	Medical physicist	84000	0.19	perez-miller
-177	Scientist, audiological	61000	0.14	foster-rice
-178	Surveyor, building	144000	0	salas-group
-179	Engineer, water	165000	0.18	ingram-ferguson-and-rubio
-180	Psychologist, counselling	111000	0.01	taylor-yu-and-lee
-181	Astronomer	55000	0.09	martinez-daniels
-182	Medical physicist	110000	0.01	mitchell-brown
-183	Chief Technology Officer	64000	0.2	robbins-marsh-and-martin
-184	Arboriculturist	191000	0	salas-group
-185	Research scientist (medical)	175000	0.02	norman-harvey
-186	Ship broker	177000	0.19	hall-davis
-187	Conservation officer, nature	108000	0.13	jackson-davila-and-conley
-188	Bookseller	164000	0.12	reynolds-greene
-189	Medical sales representative	196000	0.01	hall-mills
-190	Psychologist, sport and exercise	172000	0.04	ayala-buchanan
-191	Copy	103000	0.03	foster-rice
-192	Designer, furniture	149000	0	mueller-moore
-193	Chartered loss adjuster	72000	0.02	davis-davis
-194	Learning disability nurse	66000	0.07	ayala-buchanan
-195	Producer, radio	168000	0.06	salas-group
-196	Operational investment banker	200000	0.14	smith-llc
-197	Engineer, broadcasting (operations)	86000	0	baker-santos
-198	Surveyor, quantity	72000	0.11	mejia-scott-and-ryan
-199	Fashion designer	137000	0.06	reynolds-greene
-200	Accommodation manager	126000	0.05	mejia-scott-and-ryan
+COPY public.jobs (id, title, salary, equity, company_handle, date_posted) FROM stdin;
 \.
 
 
@@ -390,8 +141,6 @@ COPY public.jobs (id, title, salary, equity, company_handle) FROM stdin;
 --
 
 COPY public.users (username, password, first_name, last_name, email, photo_url, is_admin) FROM stdin;
-testuser	$2b$10$REv6t9K7EHqWCc76/SI37ODRvFfW/sPMflZpG9r4EdZPQt4QwwMf2	Joel	Burton	joel@joelburton.com	\N	f
-fish_guy	$2b$10$0XhL8xoVj1xuJWa8pEZDH.MKRykAJac2Zx1OsuOnzLrhr4d8Q0.d.	\N	\N	\N	\N	f
 \.
 
 
@@ -399,7 +148,7 @@ fish_guy	$2b$10$0XhL8xoVj1xuJWa8pEZDH.MKRykAJac2Zx1OsuOnzLrhr4d8Q0.d.	\N	\N	\N	\
 -- Name: jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jonathantoy
 --
 
-SELECT pg_catalog.setval('public.jobs_id_seq', 1, false);
+SELECT pg_catalog.setval('public.jobs_id_seq', 436, true);
 
 
 --

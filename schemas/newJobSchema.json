@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+    {
+      "id": 12,
+      "title": "Job One",
+      "salary": 50000,
+      "equity": 0.01,
+      "company_handle": "that-company",
+      "date_posted": "08/25/2020"
+    }
+  ],
+  "required": ["title", "salary", "equity", "company_handle"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "$id": "#/properties/id",
+      "type": "integer",
+      "title": "The id schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [12]
+    },
+    "title": {
+      "$id": "#/properties/title",
+      "type": "string",
+      "title": "The title schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": ["Job One"]
+    },
+    "salary": {
+      "$id": "#/properties/salary",
+      "type": "integer",
+      "title": "The salary schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [50000]
+    },
+    "equity": {
+      "$id": "#/properties/equity",
+      "type": "number",
+      "title": "The equity schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0.0,
+      "examples": [0.01]
+    },
+    "company_handle": {
+      "$id": "#/properties/company_handle",
+      "type": "string",
+      "title": "The company_handle schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": ["that-company"]
+    },
+    "date_posted": {
+      "$id": "#/properties/date_posted",
+      "type": "string",
+      "title": "The date_posted schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": ["08/25/2020"]
+    }
+  }
+}

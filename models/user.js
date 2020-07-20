@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
+const createToken = require("../helpers/createToken");
 
 class User {
   static async getAll({ username, first_name, last_name }) {
@@ -50,7 +51,7 @@ class User {
       `INSERT INTO users
             (username, password, first_name, last_name, email, photo_url, is_admin)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING username, first_name, last_name, email, photo_url, is_admin`,
+            RETURNING username, is_admin`,
       [
         username,
         hashedPassword,
@@ -61,7 +62,21 @@ class User {
         is_admin,
       ]
     );
-    return result.rows[0];
+    const user = result.rows[0];
+    return createToken(user.username, user.is_admin);
+  }
+  static async authenticate({ username, password }) {
+    const existenceCheck = await db.query(
+      `SELECT username, password, is_admin
+            FROM users
+            WHERE username = $1`,
+      [username]
+    );
+    const user = existenceCheck.rows[0];
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return createToken(user.username, user.is_admin);
+    }
+    throw new ExpressError("Invalid login credentials", 401);
   }
   static async getOne(username) {
     const result = await db.query(
