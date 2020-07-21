@@ -147,6 +147,24 @@ class User {
       })
     );
   }
+  static async getRelevantJobs({ username }) {
+    const result = await db.query(
+      `SELECT j.id, j.title, j.salary, j.equity, j.company_handle, j.date_posted, json_agg(t.name) AS tech
+        FROM jobs j 
+        JOIN jobs_technologies jt ON j.id = jt.job_id
+        JOIN technologies t ON t.id = jt.technology_id
+        WHERE j.id IN (SELECT j.id
+            FROM users u 
+            JOIN users_technologies ut ON (u.username = ut.username)
+            JOIN technologies t ON (t.id = ut.technology_id)
+            JOIN jobs_technologies jt ON (t.id = jt.technology_id)
+            JOIN jobs j ON (j.id = jt.job_id)
+            WHERE u.username = $1)
+        GROUP BY j.id`,
+      [username]
+    );
+    return result.rows;
+  }
 }
 
 module.exports = User;

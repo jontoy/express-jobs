@@ -6,6 +6,7 @@ const router = new express.Router();
 const Job = require("../models/job");
 const ExpressError = require("../helpers/expressError");
 const { requireLogin, requireAdmin, authUser } = require("../middleware/auth");
+const User = require("../models/user");
 
 /** GET /
  *
@@ -28,6 +29,14 @@ router.get("/", requireLogin, async (req, res, next) => {
     return next(err);
   }
 });
+router.get("/relevant", requireLogin, async (req, res, next) => {
+  try {
+    const jobs = await User.getRelevantJobs({ username: req.curr_username });
+    return res.json({ jobs });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 router.post("/", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, newJobSchema);
@@ -38,19 +47,6 @@ router.post("/", requireAdmin, async (req, res, next) => {
   try {
     const job = await Job.create(req.body);
     return res.status(201).json({ job });
-  } catch (err) {
-    return next(err);
-  }
-});
-router.post("/:id/apply", requireLogin, async (req, res, next) => {
-  try {
-    const { state } = req.body;
-    const application = await Job.apply({
-      id: req.params.id,
-      username: req.curr_username,
-      state,
-    });
-    return res.json({ message: application.state });
   } catch (err) {
     return next(err);
   }
@@ -89,7 +85,7 @@ router.delete("/:id", requireAdmin, async (req, res, next) => {
   }
 });
 
-router.post("/:id/apply", async (req, res, next) => {
+router.post("/:id/apply", requireLogin, async (req, res, next) => {
   try {
     const { state } = req.body;
     const application = await Job.apply({

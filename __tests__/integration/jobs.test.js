@@ -364,6 +364,62 @@ describe("POST /jobs/:id/apply", function () {
   });
 });
 
+describe("POST /jobs/:id/apply", function () {
+  beforeEach(async function () {
+    const technologyResult = await db.query(
+      `INSERT INTO technologies 
+            (name) VALUES ($1), ($2), ($3)
+            RETURNING id, name`,
+      ["javascript", "python", "C++"]
+    );
+    const technologies = technologyResult.rows;
+    await db.query(
+      `INSERT INTO jobs_technologies
+            (job_id, technology_id)
+            VALUES 
+            ($1, $2),
+            ($3, $4)`,
+      [testJob.id, technologies[0].id, testJob.id, technologies[2].id]
+    );
+    await db.query(
+      `INSERT INTO users_technologies
+              (username, technology_id)
+              VALUES 
+              ($1, $2),
+              ($3, $4)`,
+      ["u1", technologies[0].id, "u2", technologies[1].id]
+    );
+  });
+  it("should return a list of jobs that match the user on technology used", async function () {
+    let response = await request(app)
+      .get(`/jobs/relevant`)
+      .send({ _token: tokens.u1 });
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.jobs).toEqual([
+      {
+        ...testJob,
+        date_posted: expect.any(String),
+        tech: ["javascript", "C++"],
+      },
+    ]);
+  });
+  it("should deny access if no token is present", async function () {
+    let response = await request(app).get(`/jobs/relevant`);
+    expect(response.statusCode).toEqual(403);
+  });
+  it("should deny access if malformed token is present", async function () {
+    let response = await request(app)
+      .get(`/jobs/relevant`)
+      .send({ _token: badToken });
+    expect(response.statusCode).toEqual(401);
+  });
+  afterEach(async function () {
+    await db.query("DELETE FROM jobs_technologies");
+    await db.query("DELETE FROM users_technologies");
+    await db.query("DELETE FROM technologies");
+  });
+});
+
 afterAll(function () {
   db.end();
 });
