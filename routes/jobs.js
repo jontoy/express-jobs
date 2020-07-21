@@ -42,6 +42,19 @@ router.post("/", requireAdmin, async (req, res, next) => {
     return next(err);
   }
 });
+router.post("/:id/apply", requireLogin, async (req, res, next) => {
+  try {
+    const { state } = req.body;
+    const application = await Job.apply({
+      id: req.params.id,
+      username: req.curr_username,
+      state,
+    });
+    return res.json({ message: application.state });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 router.get("/:id", requireLogin, async (req, res, next) => {
   try {
@@ -71,6 +84,20 @@ router.delete("/:id", requireAdmin, async (req, res, next) => {
   try {
     await Job.delete(req.params.id);
     return res.json({ message: "Job deleted" });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post("/:id/apply", async (req, res, next) => {
+  try {
+    const { state } = req.body;
+    const application = await Job.apply({
+      id: req.params.id,
+      username: req.curr_username,
+      state,
+    });
+    return res.json({ message: application.state });
   } catch (err) {
     return next(err);
   }

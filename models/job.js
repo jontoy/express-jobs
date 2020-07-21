@@ -88,6 +88,45 @@ class Job {
     }
     return true;
   }
+  static async apply({ id, username, state = "applied" }) {
+    const validStates = ["interested", "applied", "accepted", "rejected"];
+    if (!validStates.includes(state)) {
+      throw new ExpressError(
+        `State must be one of: interested, applied, accepted, rejected`,
+        400
+      );
+    }
+    const existenceCheckUser = await db.query(
+      `SELECT username FROM users WHERE username = $1`,
+      [username]
+    );
+    if (!existenceCheckUser.rows[0]) {
+      throw new ExpressError(`No user found with username ${username}`, 404);
+    }
+    const existenceCheckJob = await db.query(
+      `SELECT id FROM jobs WHERE id = $1`,
+      [id]
+    );
+    if (!existenceCheckJob.rows[0]) {
+      throw new ExpressError(`No job found with id ${id}`, 404);
+    }
+    await db.query(
+      `DELETE FROM applications
+        WHERE username = $1 AND job_id = $2`,
+      [username, id]
+    );
+
+    const result = await db.query(
+      `INSERT INTO applications
+          (username, job_id, state)
+          VALUES
+          ($1, $2, $3)
+          RETURNING username, job_id, state, created_at`,
+      [username, id, state]
+    );
+
+    return result.rows[0];
+  }
 }
 
 module.exports = Job;

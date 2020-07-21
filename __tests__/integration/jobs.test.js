@@ -330,6 +330,40 @@ describe("DELETE /jobs/:id", function () {
   });
 });
 
+describe("POST /jobs/:id/apply", function () {
+  it("should apply to an existing job", async function () {
+    let response = await request(app)
+      .post(`/jobs/${testJob.id}/apply`)
+      .send({ _token: tokens.u1, state: "accepted" });
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.message).toEqual("accepted");
+  });
+  it("should deny access if no token is present", async function () {
+    let response = await request(app)
+      .post(`/jobs/${testJob.id}/apply`)
+      .send({ state: "accepted" });
+    expect(response.statusCode).toEqual(403);
+  });
+  it("should deny access if malformed token is present", async function () {
+    let response = await request(app)
+      .post(`/jobs/${testJob.id}/apply`)
+      .send({ _token: badToken, state: "accepted" });
+    expect(response.statusCode).toEqual(401);
+  });
+  it("should return a 400 if state is invalid", async function () {
+    let response = await request(app)
+      .post(`/jobs/${testJob.id}/apply`)
+      .send({ _token: tokens.u1, state: "indifferent" });
+    expect(response.statusCode).toEqual(400);
+  });
+  it("should return a 404 if id is invalid", async function () {
+    let response = await request(app)
+      .post(`/jobs/0/apply`)
+      .send({ _token: tokens.u1, state: "accepted" });
+    expect(response.statusCode).toEqual(404);
+  });
+});
+
 afterAll(function () {
   db.end();
 });
