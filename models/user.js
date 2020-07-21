@@ -89,6 +89,7 @@ class User {
     if (!user) {
       throw new ExpressError(`No user found with username ${username}`, 404);
     }
+    user.applications = await User.getApplications(username);
     return user;
   }
   static async update(username, data) {
@@ -121,6 +122,30 @@ class User {
       throw new ExpressError(`No user found with username ${username}`, 404);
     }
     return true;
+  }
+  static async getApplications(username) {
+    const result = await db.query(
+      `SELECT state, created_at, id, title, salary, equity, company_handle, date_posted 
+            FROM applications LEFT JOIN jobs ON applications.job_id = jobs.id
+            WHERE applications.username = $1`,
+      [username]
+    );
+    return result.rows.map(
+      ({
+        state,
+        created_at,
+        id,
+        title,
+        salary,
+        equity,
+        company_handle,
+        date_posted,
+      }) => ({
+        state,
+        created_at,
+        job: { id, title, salary, equity, company_handle, date_posted },
+      })
+    );
   }
 }
 

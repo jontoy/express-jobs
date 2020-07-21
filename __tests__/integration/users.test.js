@@ -1,4 +1,4 @@
-process.env.NODE_ENV = "test";
+process.env.DATABASE_URL = "jobly-test";
 
 const app = require("../../app");
 const request = require("supertest");
@@ -11,6 +11,8 @@ async function _pwd(password) {
   return await bcrypt.hash(password, 1);
 }
 let testUser;
+let testJob;
+let testApplication;
 let tokens = {};
 let badToken = jwt.sign({ username: "u1", is_admin: true }, "invalid-key");
 beforeEach(async function () {
@@ -24,10 +26,43 @@ beforeEach(async function () {
   );
   testUser = result.rows[0];
   tokens["u1"] = createToken("u1", false);
+  result = await db.query(
+    `INSERT INTO companies
+        (handle, name, num_employees, description, logo_url)
+        VALUES
+        ($1, $2, $3, $4, $5)
+        RETURNING handle`,
+    ["handle1", "name1", 500, "desc1", "www.logo1.com"]
+  );
+  const { handle } = result.rows[0];
+  console.log(result.rows[0]);
+  result = await db.query(
+    `INSERT INTO jobs
+            (title, salary, equity, company_handle)
+            VALUES
+            ($1, $2, $3, $4)
+            RETURNING id, title, salary, equity, company_handle, date_posted`,
+    ["t1", 40000, 0.03, handle]
+  );
+  testJob = result.rows[0];
+  console.log(result.rows[0]);
+  result = await db.query(
+    `INSERT INTO applications
+            (username, job_id, state)
+            VALUES
+            ($1, $2, $3)
+            RETURNING username, job_id, state, created_at`,
+    [testUser.username, testJob.id, "accepted"]
+  );
+  testApplication = result.rows[0];
+  console.log(result.rows[0]);
 });
 
 afterEach(async function () {
+  await db.query("DELETE FROM applications");
   await db.query("DELETE FROM users");
+  await db.query("DELETE FROM jobs");
+  await db.query("DELETE FROM companies");
 });
 
 describe("GET /users", function () {
@@ -89,6 +124,13 @@ describe("GET /users/:username", function () {
       last_name: "ln1",
       email: "e1",
       photo_url: "www.logo1.com",
+      applications: [
+        {
+          state: testApplication.state,
+          created_at: expect.any(String),
+          job: { ...testJob, date_posted: expect.any(String) },
+        },
+      ],
     });
   });
   it("should return a 404 if given an invalid handle", async function () {
@@ -127,6 +169,7 @@ describe("POST /users", function () {
       last_name: "ln19",
       email: "e19",
       photo_url: "www.logo19.com",
+      applications: [],
     });
   });
   it("should return a 401 if username is not unique", async function () {
@@ -197,7 +240,16 @@ describe("PATCH /users/:username", function () {
     expect(response.body.user).toEqual(targetResponse);
     response = await request(app).get(`/users/${testUser.username}`);
     expect(response.statusCode).toEqual(200);
-    expect(response.body.user).toEqual(targetResponse);
+    expect(response.body.user).toEqual({
+      ...targetResponse,
+      applications: [
+        {
+          state: testApplication.state,
+          created_at: expect.any(String),
+          job: { ...testJob, date_posted: expect.any(String) },
+        },
+      ],
+    });
   });
   it("should deny access if no token is present", async function () {
     const newUser = {
