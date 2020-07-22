@@ -1,11 +1,13 @@
 language: node_js
+node_js:
+  - 11
 services:
   - postgresql
 
 before_script:
   - createdb jobly-test
+  - psql jobly-test < data.sql
   - createdb jobly-test-jobs
+  - psql jobly-test-jobs < data.sql
   - createdb jobly-test-companies
-  - psql jobly-test < db.sql
-  - psql jobly-test-jobs < db.sql
-  - psql jobly-test-companies < db.sql
+  - psql jobly-test-companies < data.sql

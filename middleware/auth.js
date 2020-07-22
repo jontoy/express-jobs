@@ -17,7 +17,6 @@ const authUser = (req, res, next) => {
 };
 
 const requireLogin = (req, res, next) => {
-  console.log(req.curr_username);
   try {
     if (req.curr_username) {
       return next();
