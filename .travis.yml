@@ -6,8 +6,6 @@ services:
 
 before_script:
   - createdb jobly-test
-  - createdb jobly-test-jobs
-  - createdb jobly-test-companies
-  - pg_restore -O -s -x -d jobly-test db.sql
-  - pg_restore -O -s -x -d jobly-test-jobs db.sql
-  - pg_restore -O -s -x -d jobly-test-companies db.sql
+  - psql jobly-test < db.sql
+  - createdb -T jobly-test jobly-test-jobs
+  - createdb -T jobly-test jobly-test-companies
