@@ -8,6 +8,6 @@ before_script:
   - createdb jobly-test
   - createdb jobly-test-jobs
   - createdb jobly-test-companies
-  - pg_restore -Fc -O -s -x -d jobly-test db.sql
-  - pg_restore -Fc -O -s -x -d jobly-test-jobs db.sql
-  - pg_restore -Fc -O -s -x -d jobly-test-companies db.sql
+  - pg_restore -O -s -x -d jobly-test db.sql
+  - pg_restore -O -s -x -d jobly-test-jobs db.sql
+  - pg_restore -O -s -x -d jobly-test-companies db.sql
