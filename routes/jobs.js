@@ -29,6 +29,24 @@ router.get("/", requireLogin, async (req, res, next) => {
     return next(err);
   }
 });
+
+/** GET /relevant
+ *
+ * Gets details on all jobs that have at least one technology in common
+ * with current user.
+ * Requires a logged in user.
+ *
+ * Returns:
+ *  {jobs: [{ id,
+ *          title,
+ *          salary,
+ *          equity,
+ *          company_handle,
+ *          date_posted,
+ *          tech: [tech1, tech2, ...]},
+ *          ...]
+ *
+ */
 router.get("/relevant", requireLogin, async (req, res, next) => {
   try {
     const jobs = await User.getRelevantJobs({ username: req.curr_username });
@@ -38,6 +56,16 @@ router.get("/relevant", requireLogin, async (req, res, next) => {
   }
 });
 
+/** POST /
+ *
+ * Creates a new job.
+ * Requires a JWT with admin privileges.
+ *
+ * Accepts: {title, salary, equity, company_handle}
+ *
+ * Returns: {job: {id, title, salary, equity, company_handle, date_posted}}
+ *
+ */
 router.post("/", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, newJobSchema);
   if (!schemaCheck.valid) {
@@ -52,6 +80,23 @@ router.post("/", requireAdmin, async (req, res, next) => {
   }
 });
 
+/** GET /[id]
+ *
+ * Gets details on a job including its associated company.
+ * Requires a logged in user.
+ *
+ * Returns:
+ *  {job: { id,
+ *          title,
+ *          salary,
+ *          equity,
+ *          company_handle,
+ *          date_posted,
+ *          company: {handle, name, num_employees, description, logo_url}}}
+ *
+ * If id is not found, raises 404 error
+ *
+ */
 router.get("/:id", requireLogin, async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -62,6 +107,17 @@ router.get("/:id", requireLogin, async (req, res, next) => {
   }
 });
 
+/** PATCH /[id]
+ *
+ * Updates a job.
+ * Requires a JWT with admin privileges.
+ *
+ * Accepts: {title, salary, equity}
+ *
+ * Returns: {job: {id, title, salary, equity, company_handle, date_posted}}
+ *
+ * If job cannot be found, raises 404 error.
+ */
 router.patch("/:id", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, updateJobSchema);
   if (!schemaCheck.valid) {
@@ -76,6 +132,15 @@ router.patch("/:id", requireAdmin, async (req, res, next) => {
   }
 });
 
+/** DELETE /[id]
+ *
+ * Deletes a job.
+ * Requires a JWT with admin privileges.
+ *
+ * Returns: {message: "Job deleted"}
+ *
+ * If job cannot be found, raises 404 error.
+ */
 router.delete("/:id", requireAdmin, async (req, res, next) => {
   try {
     await Job.delete(req.params.id);
@@ -85,6 +150,20 @@ router.delete("/:id", requireAdmin, async (req, res, next) => {
   }
 });
 
+/** Apply /[id]/apply
+ *
+ * Alters the application state for a job for the current user.
+ * If an application exists it will be updated. If not it will
+ * be created.
+ * Requires a logged in user.
+ *
+ * Accepts {state}
+ * state must be one of: "Interested", "Applied", "Accepted", "Rejected"
+ *
+ * Returns: {message: state}
+ *
+ * If job and/or user cannot be found, raises 404 error.
+ */
 router.post("/:id/apply", requireLogin, async (req, res, next) => {
   try {
     const { state } = req.body;

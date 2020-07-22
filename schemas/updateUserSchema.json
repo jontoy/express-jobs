@@ -7,26 +7,16 @@
   "default": {},
   "examples": [
     {
-      "username": "usernameguy",
       "password": "password123",
       "first_name": "Charles",
       "last_name": "Theguyman",
       "photo_url": "www.fakeurl.com",
-      "email": "charles@theguyman.com",
-      "is_admin": false
+      "email": "charles@theguyman.com"
     }
   ],
   "required": [],
   "additionalProperties": true,
   "properties": {
-    "username": {
-      "$id": "#/properties/username",
-      "type": "string",
-      "title": "The username schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": "",
-      "examples": ["usernameguy"]
-    },
     "password": {
       "$id": "#/properties/password",
       "type": "string",
@@ -66,14 +56,6 @@
       "description": "An explanation about the purpose of this instance.",
       "default": "",
       "examples": ["charles@theguyman.com"]
-    },
-    "is_admin": {
-      "$id": "#/properties/is_admin",
-      "type": "boolean",
-      "title": "The is_admin schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": false,
-      "examples": [false]
     }
   }
 }

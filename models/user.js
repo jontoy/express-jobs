@@ -6,6 +6,13 @@ const sqlForPartialUpdate = require("../helpers/partialUpdate");
 const createToken = require("../helpers/createToken");
 
 class User {
+  /** Returns list of user info:
+   *
+   * [{username, first_name, last_name, email}, ...]
+   *
+   * Optionally allows filtering by username, first_name or last_name
+   * Results are sorted by username
+   * */
   static async getAll({ username, first_name, last_name }) {
     let baseQuery = "SELECT username, first_name, last_name, email FROM users";
     const whereExpressions = [];
@@ -30,6 +37,8 @@ class User {
     const results = await db.query(finalQuery, queryValues);
     return results.rows;
   }
+
+  /** Register user with data. Returns JWT. */
   static async create({
     username,
     password,
@@ -65,6 +74,7 @@ class User {
     const user = result.rows[0];
     return createToken(user.username, user.is_admin);
   }
+  /** Checks if username and password are valid. If so, returns JWT */
   static async authenticate({ username, password }) {
     const existenceCheck = await db.query(
       `SELECT username, password, is_admin
@@ -78,6 +88,16 @@ class User {
     }
     throw new ExpressError("Invalid login credentials", 401);
   }
+
+  /** Returns detailed info for single user. Includes all associated
+   * applications.
+   *
+   * {username, first_name, last_name, email, photo_url, applications:[app1, ...]}
+   *
+   * If user cannot be found, raises 404 error.
+   *
+   * */
+
   static async getOne(username) {
     const result = await db.query(
       `SELECT username, first_name, last_name, email, photo_url 
@@ -92,6 +112,13 @@ class User {
     user.applications = await User.getApplications(username);
     return user;
   }
+  /** Selectively updates user from given data
+   *
+   * Returns all data about user except is_admin and password.
+   *
+   * If user cannot be found, raises 404 error.
+   *
+   **/
   static async update(username, data) {
     if (data.password) {
       data.password = bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
@@ -111,6 +138,11 @@ class User {
     delete user.password;
     return user;
   }
+  /** Deletes user. Returns true.
+   *
+   * If user cannot be found, should raises 404 error.
+   *
+   **/
   static async delete(username) {
     const result = await db.query(
       `DELETE FROM users 
@@ -123,6 +155,8 @@ class User {
     }
     return true;
   }
+
+  /** Returns all applications associated with a username and their job data */
   static async getApplications(username) {
     const result = await db.query(
       `SELECT state, created_at, id, title, salary, equity, company_handle, date_posted 
@@ -147,6 +181,10 @@ class User {
       })
     );
   }
+  /**
+   * Returns job data for all jobs that match user with the given
+   * username on at least one technology.
+   * Job data includes all technology associated with the job. */
   static async getRelevantJobs({ username }) {
     const result = await db.query(
       `SELECT j.id, j.title, j.salary, j.equity, j.company_handle, j.date_posted, json_agg(t.name) AS tech

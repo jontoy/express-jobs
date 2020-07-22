@@ -3,6 +3,13 @@ const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 class Job {
+  /** Returns list of basic job info:
+   *
+   * [{title, company_handle}, ...]
+   *
+   * Optionally allows filtering by title, min_salary or min_equity
+   * Results are sorted by date.
+   * */
   static async getAll({ search, min_salary, min_equity }) {
     let baseQuery = "SELECT title, company_handle FROM jobs";
     const whereExpressions = [];
@@ -27,6 +34,8 @@ class Job {
     const results = await db.query(finalQuery, queryValues);
     return results.rows;
   }
+
+  /** Creates a job. Returns full job info. */
   static async create({ title, salary, equity, company_handle }) {
     const result = await db.query(
       `INSERT INTO jobs
@@ -38,6 +47,7 @@ class Job {
     const job = result.rows[0];
     return job;
   }
+  /** Returns full job info for all jobs with a given company handle */
   static async getAllByCompanyHandle(company_handle) {
     const result = await db.query(
       `SELECT id, title, salary, equity, company_handle, date_posted
@@ -47,6 +57,13 @@ class Job {
     );
     return result.rows || [];
   }
+  /** Returns job info:
+   *  {id, title, salary, equity, company_handle, date_posted,
+   *   company:{handle, name, num_employees, description, logo_url}}
+   *
+   * If job cannot be found, raises a 404 error.
+   *
+   **/
   static async getOne(id) {
     const result = await db.query(
       `SELECT id, title, salary, equity, company_handle, date_posted 
@@ -67,6 +84,13 @@ class Job {
     job.company = companyResult.rows[0];
     return job;
   }
+  /** Selectively updates job from given data
+   *
+   * Returns all data about job.
+   *
+   * If job cannot be found, raises a 404 error.
+   *
+   **/
   static async update(id, data) {
     let { query, values } = sqlForPartialUpdate("jobs", data, "id", id);
     const result = await db.query(query, values);
@@ -76,6 +100,11 @@ class Job {
     }
     return job;
   }
+  /** Deletes job. Returns true.
+   *
+   * If job cannot be found, raises a 404 error.
+   *
+   **/
   static async delete(id) {
     const result = await db.query(
       `DELETE FROM jobs 
@@ -88,6 +117,18 @@ class Job {
     }
     return true;
   }
+
+  /** Creates application for given user, job and application state.
+   * Deletes previous applications if they exist.
+   *
+   * Returns {username, job_id, state, created_at}.
+   *
+   * Raises 400 error is state is not in:
+   * ['interested', 'applied', 'accepted', 'rejected']
+   *
+   * Raises 404 error if user and/or job cannot be found
+   *
+   **/
   static async apply({ id, username, state = "applied" }) {
     const validStates = ["interested", "applied", "accepted", "rejected"];
     if (!validStates.includes(state)) {

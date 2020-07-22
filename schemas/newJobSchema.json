@@ -7,25 +7,15 @@
   "default": {},
   "examples": [
     {
-      "id": 12,
       "title": "Job One",
       "salary": 50000,
       "equity": 0.01,
-      "company_handle": "that-company",
-      "date_posted": "08/25/2020"
+      "company_handle": "that-company"
     }
   ],
   "required": ["title", "salary", "equity", "company_handle"],
   "additionalProperties": true,
   "properties": {
-    "id": {
-      "$id": "#/properties/id",
-      "type": "integer",
-      "title": "The id schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": 0,
-      "examples": [12]
-    },
     "title": {
       "$id": "#/properties/title",
       "type": "string",
@@ -57,14 +47,6 @@
       "description": "An explanation about the purpose of this instance.",
       "default": "",
       "examples": ["that-company"]
-    },
-    "date_posted": {
-      "$id": "#/properties/date_posted",
-      "type": "string",
-      "title": "The date_posted schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": "",
-      "examples": ["08/25/2020"]
     }
   }
 }

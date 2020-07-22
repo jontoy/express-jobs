@@ -29,6 +29,16 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+/** POST /
+ *
+ * Creates a new user. Returns a JWT.
+ *
+ * Accepts {username, password, first_name, last_name, photo_url, email, is_admin}
+ *
+ * It returns: {token}
+ *
+ * If username is taken, raises 401 error
+ */
 router.post("/", async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, newUserSchema);
   if (!schemaCheck.valid) {
@@ -43,6 +53,27 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+/** GET /[username]
+ *
+ * Get detailed information on a single user,
+ * including any applications they have made.
+ *
+ * It returns:
+ *    {user: { username,
+ *             first_name,
+ *             last_name,
+ *             email,
+ *             photo_url,
+ *             applications:[
+ *              {state,
+ *               created_at,
+ *               job: {id, title, salary, equity, company_handle, date_posted}
+ *              },
+ *              ...]
+ *          }}
+ *
+ * If user cannot be found, returns 404
+ */
 router.get("/:username", async (req, res, next) => {
   try {
     const { username } = req.params;
@@ -53,6 +84,17 @@ router.get("/:username", async (req, res, next) => {
   }
 });
 
+/** PATCH /[username]
+ *
+ * Updates a user.
+ * Requires currently logged in user to match user being updated.
+ *
+ * Accepts {password, first_name, last_name, email, photo_url}
+ * It returns:
+ *    {user: {username, first_name, last_name, email, photo_url}}
+ *
+ * If user cannot be found, returns 404
+ */
 router.patch("/:username", requireCorrectUser, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, updateUserSchema);
   if (!schemaCheck.valid) {
@@ -67,6 +109,16 @@ router.patch("/:username", requireCorrectUser, async (req, res, next) => {
   }
 });
 
+/** Delete /[username]
+ *
+ * Deletes a user.
+ * Requires currently logged in user to match user being updated.
+ *
+ * It returns:
+ *    {message: "User deleted"}
+ *
+ * If user cannot be found, returns 404
+ */
 router.delete("/:username", requireCorrectUser, async (req, res, next) => {
   try {
     await User.delete(req.params.username);

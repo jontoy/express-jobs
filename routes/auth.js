@@ -5,6 +5,16 @@ const router = new express.Router();
 const User = require("../models/user");
 const ExpressError = require("../helpers/expressError");
 
+/** POST /login
+ *
+ * Logs in user. Returns a JWT.
+ *
+ * Accepts {username, password}
+ *
+ * It returns: {token}
+ *
+ * If incorrect username and/or password, raises 401 error
+ */
 router.post("/login", async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, loginSchema);
   if (!schemaCheck.valid) {

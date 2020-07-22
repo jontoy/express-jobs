@@ -28,7 +28,17 @@ router.get("/", requireLogin, async (req, res, next) => {
     return next(err);
   }
 });
-
+/** POST /
+ *
+ * Creates a new company. Requires JWT with admin privileges.
+ *
+ * Accepts {handle, name, num_employees, description, logo_url}
+ *
+ * Returns {company: {handle, name, num_employees, description, logo_url}}
+ *
+ * If handle and/or name is taken, raises 401 error
+ *
+ */
 router.post("/", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, newCompanySchema);
   if (!schemaCheck.valid) {
@@ -43,6 +53,25 @@ router.post("/", requireAdmin, async (req, res, next) => {
   }
 });
 
+/** GET /[handle]
+ *
+ * Gets details on a company including all jobs associated with its handle.
+ * Requires a logged in user.
+ *
+ * Returns:
+ *  {company: { handle,
+ *              name,
+ *              num_employees,
+ *              description,
+ *              logo_url,
+ *              jobs:[
+ *                  {id, title, salary, equity, company_handle, date_posted},
+ *               ]
+ *              }}
+ *
+ * If handle is not found, raises 404 error
+ *
+ */
 router.get("/:handle", requireLogin, async (req, res, next) => {
   try {
     const { handle } = req.params;
@@ -53,6 +82,17 @@ router.get("/:handle", requireLogin, async (req, res, next) => {
   }
 });
 
+/** PATCH /[handle]
+ *
+ * Updates company. Requires a JWT with admin privileges.
+ *
+ * Accepts {handle, name, num_employees, description, logo_url}
+ *
+ * Returns {company: {handle, name, num_employees, description, logo_url}}
+ *
+ * If handle is not found, raises 404 error
+ *
+ */
 router.patch("/:handle", requireAdmin, async (req, res, next) => {
   const schemaCheck = jsonschema.validate(req.body, updateCompanySchema);
   if (!schemaCheck.valid) {
@@ -67,6 +107,15 @@ router.patch("/:handle", requireAdmin, async (req, res, next) => {
   }
 });
 
+/** DELETE /[handle]
+ *
+ * Deletes a company. Requires a JWT with admin privileges.
+ *
+ * Returns {message: "Company deleted"}}
+ *
+ * If handle is not found, raises 404 error
+ *
+ */
 router.delete("/:handle", requireAdmin, async (req, res, next) => {
   try {
     await Company.delete(req.params.handle);
