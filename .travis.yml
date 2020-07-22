@@ -5,8 +5,8 @@ services:
   - postgresql
 
 before_script:
-  - createdb jobly-test
-  - psql jobly-test < data.sql
+  - createdb jobly-test-users
+  - psql jobly-test-users < data.sql
   - createdb jobly-test-jobs
   - psql jobly-test-jobs < data.sql
   - createdb jobly-test-companies

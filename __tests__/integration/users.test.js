@@ -1,4 +1,4 @@
-process.env.DATABASE_URL = "jobly-test";
+process.env.DATABASE_URL = "jobly-test-users";
 
 const app = require("../../app");
 const request = require("supertest");
