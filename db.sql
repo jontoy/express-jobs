@@ -16,26 +16,36 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: state; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.state AS ENUM (
+    'interested',
+    'applied',
+    'accepted',
+    'rejected'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: applications; Type: TABLE; Schema: public; Owner: jonathantoy
+-- Name: applications; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.applications (
     username text NOT NULL,
     job_id integer NOT NULL,
-    state text NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    state public.state
 );
 
 
-ALTER TABLE public.applications OWNER TO jonathantoy;
-
 --
--- Name: companies; Type: TABLE; Schema: public; Owner: jonathantoy
+-- Name: companies; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.companies (
@@ -47,10 +57,8 @@ CREATE TABLE public.companies (
 );
 
 
-ALTER TABLE public.companies OWNER TO jonathantoy;
-
 --
--- Name: jobs; Type: TABLE; Schema: public; Owner: jonathantoy
+-- Name: jobs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.jobs (
@@ -64,10 +72,8 @@ CREATE TABLE public.jobs (
 );
 
 
-ALTER TABLE public.jobs OWNER TO jonathantoy;
-
 --
--- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: jonathantoy
+-- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.jobs_id_seq
@@ -79,17 +85,55 @@ CREATE SEQUENCE public.jobs_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.jobs_id_seq OWNER TO jonathantoy;
-
 --
--- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jonathantoy
+-- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: jonathantoy
+-- Name: jobs_technologies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.jobs_technologies (
+    job_id integer,
+    technology_id integer
+);
+
+
+--
+-- Name: technologies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.technologies (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+--
+-- Name: technologies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.technologies_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: technologies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.technologies_id_seq OWNED BY public.technologies.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
@@ -103,25 +147,40 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO jonathantoy;
+--
+-- Name: users_technologies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users_technologies (
+    username text,
+    technology_id integer
+);
+
 
 --
--- Name: jobs id; Type: DEFAULT; Schema: public; Owner: jonathantoy
+-- Name: jobs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.jobs ALTER COLUMN id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
 
 
 --
--- Data for Name: applications; Type: TABLE DATA; Schema: public; Owner: jonathantoy
+-- Name: technologies id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-COPY public.applications (username, job_id, state, created_at) FROM stdin;
+ALTER TABLE ONLY public.technologies ALTER COLUMN id SET DEFAULT nextval('public.technologies_id_seq'::regclass);
+
+
+--
+-- Data for Name: applications; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.applications (username, job_id, created_at, state) FROM stdin;
 \.
 
 
 --
--- Data for Name: companies; Type: TABLE DATA; Schema: public; Owner: jonathantoy
+-- Data for Name: companies; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.companies (handle, name, num_employees, description, logo_url) FROM stdin;
@@ -129,7 +188,7 @@ COPY public.companies (handle, name, num_employees, description, logo_url) FROM 
 
 
 --
--- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: jonathantoy
+-- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.jobs (id, title, salary, equity, company_handle, date_posted) FROM stdin;
@@ -137,7 +196,23 @@ COPY public.jobs (id, title, salary, equity, company_handle, date_posted) FROM s
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: jonathantoy
+-- Data for Name: jobs_technologies; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.jobs_technologies (job_id, technology_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: technologies; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.technologies (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.users (username, password, first_name, last_name, email, photo_url, is_admin) FROM stdin;
@@ -145,14 +220,29 @@ COPY public.users (username, password, first_name, last_name, email, photo_url, 
 
 
 --
--- Name: jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jonathantoy
+-- Data for Name: users_technologies; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.jobs_id_seq', 436, true);
+COPY public.users_technologies (username, technology_id) FROM stdin;
+\.
 
 
 --
--- Name: applications applications_pkey; Type: CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.jobs_id_seq', 2296, true);
+
+
+--
+-- Name: technologies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.technologies_id_seq', 1, false);
+
+
+--
+-- Name: applications applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.applications
@@ -160,7 +250,7 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- Name: companies companies_name_key; Type: CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: companies companies_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.companies
@@ -168,7 +258,7 @@ ALTER TABLE ONLY public.companies
 
 
 --
--- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.companies
@@ -176,7 +266,7 @@ ALTER TABLE ONLY public.companies
 
 
 --
--- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.jobs
@@ -184,7 +274,23 @@ ALTER TABLE ONLY public.jobs
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: technologies technologies_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.technologies
+    ADD CONSTRAINT technologies_name_key UNIQUE (name);
+
+
+--
+-- Name: technologies technologies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.technologies
+    ADD CONSTRAINT technologies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -192,7 +298,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: applications applications_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: applications applications_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.applications
@@ -200,7 +306,7 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- Name: applications applications_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: applications applications_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.applications
@@ -208,7 +314,39 @@ ALTER TABLE ONLY public.applications
 
 
 --
--- Name: jobs jobs_company_handle_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jonathantoy
+-- Name: jobs_technologies fk_job; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jobs_technologies
+    ADD CONSTRAINT fk_job FOREIGN KEY (job_id) REFERENCES public.jobs(id);
+
+
+--
+-- Name: users_technologies fk_technology; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users_technologies
+    ADD CONSTRAINT fk_technology FOREIGN KEY (technology_id) REFERENCES public.technologies(id);
+
+
+--
+-- Name: jobs_technologies fk_technology; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.jobs_technologies
+    ADD CONSTRAINT fk_technology FOREIGN KEY (technology_id) REFERENCES public.technologies(id);
+
+
+--
+-- Name: users_technologies fk_user; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users_technologies
+    ADD CONSTRAINT fk_user FOREIGN KEY (username) REFERENCES public.users(username);
+
+
+--
+-- Name: jobs jobs_company_handle_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.jobs
