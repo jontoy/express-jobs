@@ -35,7 +35,6 @@ beforeEach(async function () {
     ["handle1", "name1", 500, "desc1", "www.logo1.com"]
   );
   const { handle } = result.rows[0];
-  console.log(result.rows[0]);
   result = await db.query(
     `INSERT INTO jobs
             (title, salary, equity, company_handle)
@@ -45,7 +44,6 @@ beforeEach(async function () {
     ["t1", 40000, 0.03, handle]
   );
   testJob = result.rows[0];
-  console.log(result.rows[0]);
   result = await db.query(
     `INSERT INTO applications
             (username, job_id, state)
@@ -55,7 +53,6 @@ beforeEach(async function () {
     [testUser.username, testJob.id, "accepted"]
   );
   testApplication = result.rows[0];
-  console.log(result.rows[0]);
 });
 
 afterEach(async function () {

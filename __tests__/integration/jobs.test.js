@@ -73,12 +73,10 @@ describe("GET /companies", function () {
     }
   });
   it("should return list of all jobs when given no parameters", async function () {
-    console.log(tokens.u1);
     const response = await request(app)
       .get("/jobs")
       .send({ _token: tokens.u1 });
     expect(response.statusCode).toEqual(200);
-    console.log(response.body);
     expect(response.body.jobs).toEqual([
       { title: "t3", company_handle: testCompany.handle },
       { title: "t2", company_handle: testCompany.handle },
