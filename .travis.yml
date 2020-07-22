@@ -5,6 +5,7 @@ services:
   - postgresql
 
 before_script:
+  - createdb postgres
   - pg_restore -C -d postgres db.dump
   - createdb -T jobly-test jobly-test-jobs
   - createdb -T jobly-test jobly-test-companies
