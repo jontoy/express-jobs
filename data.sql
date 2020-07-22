@@ -70,6 +70,7 @@ CREATE TABLE public.jobs (
     salary double precision,
     equity double precision,
     company_handle text NOT NULL,
+    date_posted timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT jobs_equity_check CHECK ((equity <= (1.0)::double precision)),
     CONSTRAINT jobs_company_handle_fkey FOREIGN KEY (company_handle) REFERENCES public.companies (handle) ON DELETE CASCADE
 );
