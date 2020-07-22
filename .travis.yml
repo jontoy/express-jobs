@@ -4,15 +4,10 @@ node_js:
 services:
   - postgresql
 
-addons:
-  postgresql: "12"
-  apt:
-    packages:
-      - postgresql-12
-      - postgresql-client-12
-      - postgresql-server-dev-12
-
 before_script:
-  - pg_restore -C -c -O -x -d postgres db.dump
-  - createdb -T jobly-test jobly-test-jobs
-  - createdb -T jobly-test jobly-test-companies
+  - createdb jobly-test
+  - psql jobly-test < data.sql
+  - createdb jobly-test-jobs
+  - psql jobly-test-jobs < data.sql
+  - createdb jobly-test-companies
+  - psql jobly-test-companies < data.sql
