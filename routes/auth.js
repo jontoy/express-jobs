@@ -4,6 +4,7 @@ const loginSchema = require("../schemas/loginSchema.json");
 const router = new express.Router();
 const User = require("../models/user");
 const ExpressError = require("../helpers/expressError");
+const createToken = require("../helpers/createToken");
 
 /** POST /login
  *
@@ -22,7 +23,8 @@ router.post("/login", async (req, res, next) => {
     return next(new ExpressError(listOfErrors, 400));
   }
   try {
-    const token = await User.authenticate(req.body);
+    const user = await User.authenticate(req.body);
+    const token = createToken(user.username, user.is_admin);
     return res.json({ token });
   } catch (err) {
     return next(err);

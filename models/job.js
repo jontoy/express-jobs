@@ -2,6 +2,7 @@ const db = require("../db");
 const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
+/** The data access layer relating to job queries */
 class Job {
   /** Returns list of basic job info:
    *

@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
-const createToken = require("../helpers/createToken");
 
+/** The data access layer relating to user queries */
 class User {
   /** Returns list of user info:
    *
@@ -38,7 +38,7 @@ class User {
     return results.rows;
   }
 
-  /** Register user with data. Returns JWT. */
+  /** Register user with data. Returns user details except password. */
   static async create({
     username,
     password,
@@ -60,7 +60,7 @@ class User {
       `INSERT INTO users
             (username, password, first_name, last_name, email, photo_url, is_admin)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING username, is_admin`,
+            RETURNING username, first_name, last_name, email, photo_url, is_admin`,
       [
         username,
         hashedPassword,
@@ -72,19 +72,21 @@ class User {
       ]
     );
     const user = result.rows[0];
-    return createToken(user.username, user.is_admin);
+    return user;
   }
-  /** Checks if username and password are valid. If so, returns JWT */
+  /** Checks if username and password are valid.
+   *  If so, returns user details except password */
   static async authenticate({ username, password }) {
     const existenceCheck = await db.query(
-      `SELECT username, password, is_admin
+      `SELECT username, password, first_name, last_name, email, photo_url, is_admin
             FROM users
             WHERE username = $1`,
       [username]
     );
     const user = existenceCheck.rows[0];
     if (user && (await bcrypt.compare(password, user.password))) {
-      return createToken(user.username, user.is_admin);
+      delete user.password;
+      return user;
     }
     throw new ExpressError("Invalid login credentials", 401);
   }

@@ -3,6 +3,7 @@ const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
 const Job = require("./job");
 
+/** The data access layer relating to company queries */
 class Company {
   /** Returns list of basic company info:
    *

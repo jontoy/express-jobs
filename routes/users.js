@@ -6,6 +6,7 @@ const router = new express.Router();
 const User = require("../models/user");
 const ExpressError = require("../helpers/expressError");
 const { requireCorrectUser } = require("../middleware/auth");
+const createToken = require("../helpers/createToken");
 
 /** GET /
  *
@@ -46,7 +47,8 @@ router.post("/", async (req, res, next) => {
     return next(new ExpressError(listOfErrors, 400));
   }
   try {
-    const token = await User.create(req.body);
+    const user = await User.create(req.body);
+    const token = createToken(user.username, user.is_admin);
     return res.status(201).json({ token });
   } catch (err) {
     return next(err);
