@@ -55,7 +55,7 @@ class User {
     if (duplicateCheck.rows[0]) {
       throw new ExpressError(`A username must be unique`, 401);
     }
-    const hashedPassword = bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
     const result = await db.query(
       `INSERT INTO users
             (username, password, first_name, last_name, email, photo_url, is_admin)
